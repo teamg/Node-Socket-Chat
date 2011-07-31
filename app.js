@@ -4,13 +4,13 @@ var http = require('http'),
     fs = require('fs');
 
 // for the sake of this example, lets have some html to serve up.
-//var html = fs.readFileSync('socketio.html').toString();
+var html = fs.readFileSync('views/home.html').toString();
 
 // business as usual, create an http server.
 var server = http.createServer(function (request, response) {
   // serve up the client page.
   response.writeHead(200, {'Content-Type': 'text/html'});
-  response.end('Hello');
+  response.end(html);
 });
 
 // listen on port
