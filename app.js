@@ -1,20 +1,26 @@
-// lets include some modules
 var http = require('http'), 
     io = require('socket.io'),
-    fs = require('fs');
+    fs = require('fs'),
+	router = require('choreographer').router();
 
-// for the sake of this example, lets have some html to serve up.
 var html = fs.readFileSync('views/home.html').toString();
 
-// business as usual, create an http server.
-var server = http.createServer(function (request, response) {
-  // serve up the client page.
-  response.writeHead(200, {'Content-Type': 'text/html'});
-  response.end(html);
+// define routes
+router.get('/', function(req, res) {
+	res.writeHead(200, {'Content-Type': 'text/html'});
+	res.end(html);
+})
+.get('/chat/*/', true, function(req, res, room) {
+	res.writeHead(200, {'Content-Type': 'text/plain'});
+	res.end('Posted message to ' + room + '.\n');
+})
+.notFound(function(req, res) {
+	res.writeHead(404, {'Content-Type': 'text/plain'});
+	res.end('404: Page not found!\n');
 });
 
-// listen on port
-server.listen(80);
+// create server and listen
+var server = http.createServer(router).listen(8080);
 
 // attach socket.io to the server
 var socket = io.listen(server);
